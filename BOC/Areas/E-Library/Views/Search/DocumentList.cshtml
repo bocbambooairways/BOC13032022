@@ -1,0 +1,337 @@
+﻿
+@{
+    ViewData["Title"] = "DocumentList";
+    Layout = "~/Views/Shared/_DeskTop.cshtml";
+}
+@model BOC.Areas.E_Library.Models.ProfileDetail
+@using Microsoft.AspNetCore.Http
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor;
+<style>
+.Search_Row{
+   /* width:80%;*/
+   /* margin-left:auto;
+    margin-right:auto;*/
+    background-color:blue;
+    /*display:flex;*/
+    margin-top:10px;
+    margin-bottom:10px
+}
+.Search_Row_Inside
+{
+width:100%;
+background-color:white;
+display:flex
+}
+.Search_Row_Inside_Text{
+    flex:40%;
+    background-color:lightgray;
+    text-align:right;
+    font-size:18px;
+   /* transform: translate(0px,8px)*/
+}
+.Search_Row_Inside_RightSide{
+    flex:60%;
+    background-color:lightgray;
+    text-align:center;
+    padding-left:10px;
+    padding-right:10px
+}
+</style>
+@if (Model != null)
+{
+
+    <form method="Post" action="/E-Library/Search/DocumentList">
+
+        <div style="background-color:lightgray;width:70%;margin-left:auto;
+    margin-right:auto;margin-top:50px;padding-bottom:10px;overflow:hidden;border-radius:10px;margin-bottom:20px">
+
+            @if (Model.ReadStatus != string.Empty)
+            {
+                <div style="padding:10px 0px;background-color:lightgreen;color:red;width:100px;text-align:center">@Model.ReadStatus</div>
+            }
+            <div class="Search_Row" style="margin-top:20px">
+                <div class="Search_Row_Inside">
+                    <div class="Search_Row_Inside_Text"><b>ISBN</b></div><div class="Search_Row_Inside_RightSide" >@Model.ISBN</div>
+                </div>
+            </div>    
+
+            <div class="Search_Row">
+                <div class="Search_Row_Inside">
+                    <div  class="Search_Row_Inside_Text"><b>Phiên bản</b>/ Version</div><div class="Search_Row_Inside_RightSide">@Model.Version</div>
+                </div>
+            </div>
+
+            <div class="Search_Row">
+                <div class="Search_Row_Inside">
+                    <div  class="Search_Row_Inside_Text"><b>Tên tài liệu </b>/ Document title</div><div class="Search_Row_Inside_RightSide">@Model.Subject</div>
+                </div>
+            </div>
+
+            <div class="Search_Row">
+                <div class="Search_Row_Inside">
+                    <div  class="Search_Row_Inside_Text"><b>Mô tả </b>/ Description</div><div class="Search_Row_Inside_RightSide">@Model.Description</div>
+                </div>
+            </div>
+
+
+            <div class="Search_Row">
+                <div class="Search_Row_Inside">
+                    <div  class="Search_Row_Inside_Text"><b>Tác giả </b>/ Author</div><div class="Search_Row_Inside_RightSide">@Model.Author</div>
+                </div>
+            </div>
+
+            <div class="Search_Row">
+                <div class="Search_Row_Inside">
+                    <div  class="Search_Row_Inside_Text"><b>Đơn vị nhập liệu </b>/ Input Division</div><div class="Search_Row_Inside_RightSide">@Model.DivisionCode</div>
+                </div>
+            </div>
+
+            <div class="Search_Row">
+                <div class="Search_Row_Inside">
+                    <div  class="Search_Row_Inside_Text"><b>Đơn vị phát hành </b>/ Issuing unit</div><div class="Search_Row_Inside_RightSide">@Model.PublishCode</div>
+                </div>
+            </div>
+
+            <div class="Search_Row">
+                <div class="Search_Row_Inside">
+                    <div  class="Search_Row_Inside_Text"><b>Ngày hiệu lực  </b>/ Effective Date</div><div class="Search_Row_Inside_RightSide">@Model.FromDate</div>
+                </div>
+            </div>
+
+
+            <div class="Search_Row">
+                <div class="Search_Row_Inside">
+                    <div  class="Search_Row_Inside_Text"><b>Ngày hết hạn </b>/ Expire Date</div><div class="Search_Row_Inside_RightSide">@Model.ToDate</div>
+                </div>
+            </div>
+
+            <div class="Search_Row">
+                <div class="Search_Row_Inside">
+                    <div  class="Search_Row_Inside_Text"><b>Ngày phát hành  </b>/ Publish Date</div><div class="Search_Row_Inside_RightSide">@Model.PublishDate</div>
+                </div>
+            </div>
+
+            <div class="Search_Row">
+                <div class="Search_Row_Inside">
+                    <div  class="Search_Row_Inside_Text"><b>Lần cập nhật cuối </b>/ Last update</div><div class="Search_Row_Inside_RightSide">@Model.LastUpdate</div>
+                </div>
+            </div>
+
+            <div class="Search_Row">
+                <div class="Search_Row_Inside">
+                    <div  class="Search_Row_Inside_Text"><b>Người cập nhật cuối</b>/ User update</div><div class="Search_Row_Inside_RightSide">@Model.UserUpdate</div>
+                </div>
+            </div>
+
+            @if (@Model.Attached_Files.Count > 0)
+            {
+                @for (int i = 0; i < @Model.Attached_Files.Count; i++)
+                {
+
+                    <div class="Search_Row">
+                        <div class="Search_Row_Inside">
+                            <div  class="Search_Row_Inside_Text"><b>File</b></div><div class="Search_Row_Inside_RightSide"> <span style="color:blue"><a href="" style="text-decoration:none">Title: @Model.Attached_Files[i].Title</a></span>
+                                @* </br>*@<br>
+                                Description: Tài liệu này nhằm mục đích ...</div>
+                        </div>
+                    </div>
+                }
+            }
+
+@*             Xác nhận việc đọc và hiểu   Confirm reading and understanding====================================  
+*@
+            <div class="Search_Row" style="margin-top:20px;margin-bottom:20px">
+                <div class="Search_Row_Inside">
+                    <div  class="Search_Row_Inside_Text"><b>Trạng thái</b>/ Status</div>
+                    <div class="Search_Row_Inside_RightSide">
+                        <div style="display:flex;background-color:lightgray;width:60%;margin:auto">
+                            <div style="flex:25%;background-color:lightgray;color:green">
+                                @Model.ReadStatus
+                            </div>
+                            @if (Model.ReadStatus != string.Empty)
+                            {
+                                <button type="button" style="flex:75%;background-color:green;font-size:12px;color:white;transform: translate(0px,-12px);border-radius:10px" class="btn btn-lg btn-info" onclick="ConfirmDoc()">
+                                    Xác nhận việc đọc và hiểu  <br>
+                                    Confirm reading and understanding
+                                </button>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            @for (int i = 1; i <= @ViewBag.Comment; i++)
+            {
+                @if (@ViewBag.Confirm == true)
+                {
+                    <div style="width:80%;margin-left:auto;margin-right:auto;margin-top:20px;background-color:white;margin-bottom:20px;overflow:hidden;border-radius:10px">
+                        <h5 style="padding:20px"><b>Bình luận 1</b> / comment 1</h5>
+                        <hr style="margin-top:-15px">
+
+                        <div style="width:95%;display:flex;background-color:white">
+                            <div style="flex:20%;background-color:white">
+                                <img   src="~/images/usr_logo.png" width="80px" height="80px" style="margin-left:5px;margin-top:5px;display:block;margin:auto"/>
+
+                            </div>
+                            <div style="flex:80%;background-color:white">
+                                <p><b>@HttpContextAccessor.HttpContext.Session.GetString("Username")</b> 10:15 10/03/2022</p>
+                                <p>This is my opinion about this document</p>
+                                <p><b>File đính kèm</b>  / Attached File : <span style="color:darkgreen">HSHD</span> </p>
+
+                            </div>
+                        </div>
+
+
+                        <hr>
+                        <div style="width:95%;display:flex;background-color:white">
+                            <div style="flex:20%;background-color:white">
+                                <img   src="~/images/usr_logo.png" width="80px" height="80px" style="margin-left:5px;margin-top:5px;display:block;margin:auto"/>
+
+                            </div>
+                            <div style="flex:80%;background-color:white">
+                                <textarea style="border-radius:5px" class="form-control" rows="5" id="comment" placeholder="Nhập bình luận / typing your comment"></textarea>
+                                @*            <button class="form-control" style="background-color:white;width:200px;float:left;margin-top:10px;margin-bottom:10px; overflow:hidden;font-size:12px">File đính kèm / Attached File</button>
+                                    <button class="form-control" style="background-color:green;float:right;margin-right:0px;margin-top:10px;margin-bottom:10px;width:120px;font-size:12px;color:white;background-color:green;overflow:hidden">Tạo mới/ New</button>
+                                *@        <div style="width:100%;display:flex">
+                                    <div style="flex:50%">
+                                        <button class="form-control" style="background-color:white;width:200px;float:left;margin-top:15px;margin-bottom:20px; overflow:hidden;font-size:13px;border-radius:10px">File đính kèm / Attached File</button>
+                                    </div>
+                                    <div style="flex:50%">
+                                        @if (@ViewBag.Confirm == false)
+                                        {
+                                            <button class="form-control" style="background-color:green;float:right;margin-right:0px;margin-top:15px;margin-bottom:20px;width:120px;font-size:13px;color:white;background-color:green;overflow:hidden;border-radius:10px" type="submit">Tạo mới/ New</button>
+                                        }
+                                        else
+                                        {
+                                            <a class="form-control" style="background-color:green;float:right;margin-right:0px;margin-top:15px;margin-bottom:20px;width:120px;font-size:13px;color:white;background-color:green;overflow:hidden;border-radius:10px;text-align:center;text-decoration:none" href="/E-Library/Search/DocumentList?DocProfileID=5&Reply=Reply">Trả lời/ Reply</a>
+
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+
+                //reply
+                @if (@ViewBag.Reply == "Reply")
+                {
+
+                    <div style="width:80%;margin-left:auto;margin-right:auto;margin-top:20px;background-color:white;margin-bottom:20px;overflow:hidden;border-radius:10px">
+                        <h5 style="padding:20px"><b>Bình luận 1</b> / comment 1</h5>
+                        <hr style="margin-top:-15px">
+
+                        <div style="width:95%;display:flex;background-color:white">
+                            <div style="flex:20%;background-color:white">
+                                <img   src="~/images/usr_logo.png" width="80px" height="80px" style="margin-left:5px;margin-top:5px;display:block;margin:auto"/>
+
+                            </div>
+                            <div style="flex:80%;background-color:white">
+                                <p><b>@HttpContextAccessor.HttpContext.Session.GetString("Username")</b> 10:15 10/03/2022</p>
+                                <p>This is my opinion about this document</p>
+                                <p><b>File đính kèm</b>  / Attached File : <span style="color:darkgreen">HSHD</span> </p>
+
+                            </div>
+                        </div>
+
+
+                        <div style="width:95%;display:flex;background-color:white">
+                            <div style="flex:20%;background-color:white">
+
+                            </div>
+                            <div style="flex:80%;background-color:white">
+                                <div style="width:100%;background-color:white;display:flex">
+
+                                    <div style="flex:20%;background-color:white">
+                                        <img   src="~/images/usr_logo.png" width="80px" height="80px" style="margin-left:5px;margin-top:5px;display:block;margin:auto"/>
+
+                                    </div>
+                                    <div style="flex:80%;background-color:white">
+
+                                        <p><b>@HttpContextAccessor.HttpContext.Session.GetString("Username")</b> 10:15 10/03/2022</p>
+                                        <p>This is my opinion about this document</p>
+                                        <p><b>File đính kèm</b>  / Attached File : <span style="color:darkgreen">HSHD</span> </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr>
+                        <div style="width:95%;display:flex;background-color:white">
+                            <div style="flex:20%;background-color:white">
+                                <img   src="~/images/usr_logo.png" width="80px" height="80px" style="margin-left:5px;margin-top:5px;display:block;margin:auto"/>
+
+                            </div>
+                            <div style="flex:80%;background-color:white">
+                                <textarea style="border-radius:5px" class="form-control" rows="5" id="comment" placeholder="Nhập bình luận / typing your comment"></textarea>
+                                @*            <button class="form-control" style="background-color:white;width:200px;float:left;margin-top:10px;margin-bottom:10px; overflow:hidden;font-size:12px">File đính kèm / Attached File</button>
+                                    <button class="form-control" style="background-color:green;float:right;margin-right:0px;margin-top:10px;margin-bottom:10px;width:120px;font-size:12px;color:white;background-color:green;overflow:hidden">Tạo mới/ New</button>
+                                *@        <div style="width:100%;display:flex">
+                                    <div style="flex:50%">
+                                        <button class="form-control" style="background-color:white;width:200px;float:left;margin-top:15px;margin-bottom:20px; overflow:hidden;font-size:13px;border-radius:10px">File đính kèm / Attached File</button>
+                                    </div>
+                                    <div style="flex:50%">
+
+                                        <button class="form-control" style="background-color:green;float:right;margin-right:0px;margin-top:15px;margin-bottom:20px;width:120px;font-size:13px;color:white;background-color:green;overflow:hidden;border-radius:10px" type="submit">Trả lời/ Reply</button>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+
+        //reply
+
+                <div style="width:80%;margin-left:auto;margin-right:auto;margin-top:10px;background-color:white;margin-bottom:20px;overflow:hidden;border-radius:10px">
+                    <h5 style="padding:20px"><b>Bình luận mới</b> / New comment</h5>
+
+                    <div style="width:95%;display:flex;background-color:white;margin-top:-15px">
+                        <div style="flex:20%;background-color:white">
+                            <img   src="~/images/usr_logo.png" width="80px" height="80px" style="margin-left:5px;margin-top:5px;display:block;margin:auto"/>
+
+                        </div>
+                        <div style="flex:80%;background-color:white">
+                            <textarea style="border-radius:5px" class="form-control" rows="5" id="comment" placeholder="Nhập bình luận / typing your comment"></textarea>
+                            @*            <button class="form-control" style="background-color:white;width:200px;float:left;margin-top:10px;margin-bottom:10px; overflow:hidden;font-size:12px">File đính kèm / Attached File</button>
+                                <button class="form-control" style="background-color:green;float:right;margin-right:0px;margin-top:10px;margin-bottom:10px;width:120px;font-size:12px;color:white;background-color:green;overflow:hidden">Tạo mới/ New</button>
+                            *@        <div style="width:100%;display:flex">
+                                <div style="flex:50%">
+                                    <button class="form-control" style="background-color:white;width:200px;float:left;margin-top:15px;margin-bottom:20px; overflow:hidden;font-size:13px;border-radius:10px">File đính kèm / Attached File</button>
+                                </div>
+                                <div style="flex:50%">
+                                    <button class="form-control" style="background-color:green;float:right;margin-right:0px;margin-top:15px;margin-bottom:20px;width:120px;font-size:13px;color:white;background-color:green;overflow:hidden;border-radius:10px" type="submit">Tạo mới/ New</button>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+
+        </div>
+
+    </form>
+}
+<script>
+function ConfirmDoc()
+{
+
+ window.location.href = "/E-Library/Search/QA"
+
+//alertify.confirm("Bạn có chắc chắn đã đọc và hiểu tài liệu này?/Are you sure that you have read and understood this document?",
+//  function(){
+//    alertify.success('Ok');
+   
+//  },
+//  function(){
+//    alertify.error('Cancel');
+//  });
+
+
+
+
+
+}
+
+</script>
